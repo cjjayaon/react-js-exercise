@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import './TodoList.css';
 
 function TodoList() {
   const [todos, setTodos] = useState([]);
@@ -14,18 +13,24 @@ function TodoList() {
     if (!inputValue.trim()) {
       return;
     }
-    setTodos([...todos, { text: inputValue, completed: false }]);
+    setTodos([...todos, {text: inputValue, completed: false}]);
     setInputValue('');
   };
 
-  const handleTodoToggle = (index) => {
+  const handleTodoDelete = (index) => {
+    const newTodos = [...todos];
+    newTodos.splice(index, 1);
+    setTodos(newTodos);
+  };
+
+  const handleCheckboxToggle = (index) => {
     const newTodos = [...todos];
     newTodos[index].completed = !newTodos[index].completed;
     setTodos(newTodos);
   };
 
   return (
-    <div className="TodoList">
+    <div>
       <h1>To-Do List</h1>
       <form onSubmit={handleFormSubmit}>
         <input type="text" value={inputValue} onChange={handleInputChange} />
@@ -33,15 +38,10 @@ function TodoList() {
       </form>
       <ul>
         {todos.map((todo, index) => (
-          <li key={index} className={todo.completed ? 'completed' : ''}>
-            <label>
-              <input
-                type="checkbox"
-                checked={todo.completed}
-                onChange={() => handleTodoToggle(index)}
-              />
-              {todo.text}
-            </label>
+          <li key={index} style={todo.completed ? {textDecoration: 'line-through'} : {}}>
+            <input type="checkbox" checked={todo.completed} onChange={() => handleCheckboxToggle(index)} />
+            {todo.text}{' '}
+            <button onClick={() => handleTodoDelete(index)}>Delete</button>
           </li>
         ))}
       </ul>
